@@ -1,4 +1,8 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using Common.Config;
+using Common.Message;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
+using Function;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -15,26 +19,55 @@ namespace UI
 {
     internal class App : Application
     {
-        private readonly IServiceCollection _services;
+        private readonly IServiceCollection _servicesCollection;
         private readonly Dictionary<Type, Type> _viewPair = [];
+        private readonly MainWindow _mainView;
+        private readonly IServiceProvider _serviceProvider;
 
         public App()
         {
             var builder = Host.CreateApplicationBuilder();
-            _services = builder.Services;
+            _servicesCollection = builder.Services;
 
             #region add
-
+            _servicesCollection.AddSingleton<MonitorHW>();
+            _servicesCollection.AddSingleton<DataConfig>();
             AddViewAndViewModel<MainWindow, MainWindowViewModel>();
-
             #endregion
 
-            var host = builder.Build();
-            Ioc.Default.ConfigureServices(host.Services);
+            _serviceProvider = builder.Build().Services;
+            Ioc.Default.ConfigureServices(_serviceProvider);
+            _mainView = _serviceProvider.GetService<MainWindow>()!;
 
             AutoConnectViewAndViewModel();
 
-            Startup += (x, y) => Ioc.Default.GetService<MainWindow>()!.Show(); //mainwindow show
+            Startup += (x, y) => _mainView.Show(); //mainwindow show
+
+            InitAsync();
+        }
+
+        private async void InitAsync()
+        {
+            await WaitShowWindow();
+            await _serviceProvider.GetService<MonitorHW>()!.Open();
+            WeakReferenceMessenger.Default.Send(new InitCompleteMessage());
+        }
+
+        private async Task WaitShowWindow()
+        {
+            bool active = false;
+            while (true)
+            {
+                await Task.Delay(1);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    active = _mainView.IsActive;
+                });
+
+                if (active == true)
+                    break;
+            }
         }
 
         /// <summary>
@@ -61,8 +94,8 @@ namespace UI
         /// <typeparam name="ViewModel"></typeparam>
         private void AddViewAndViewModel<View, ViewModel>() where View : ContentControl where ViewModel : class
         {
-            _services.AddSingleton<View>();
-            _services.AddSingleton<ViewModel>();
+            _servicesCollection.AddSingleton<View>();
+            _servicesCollection.AddSingleton<ViewModel>();
 
             _viewPair.Add(typeof(View), typeof(ViewModel));
         }

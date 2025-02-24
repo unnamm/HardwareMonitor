@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UI.Model
+namespace Common.Model
 {
-    partial class MonitorData : ObservableObject
+    public partial class MonitorData : ObservableObject
     {
         [ObservableProperty] private string _name = string.Empty;
-        [ObservableProperty] private double _value;
+        [ObservableProperty] private string _value;
     }
 }

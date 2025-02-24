@@ -1,14 +1,18 @@
 ﻿using Common.Config;
+using Common.Model;
 using LibreHardwareMonitor.Hardware;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Function
 {
     public class MonitorHW
     {
-        private readonly Computer _com;
         private readonly int _timeout;
+        private readonly Computer _com;
 
         public MonitorHW(DataConfig config)
         {
@@ -40,11 +44,11 @@ namespace Function
             }
         }
 
-        public async Task<string> Read()
+        public async Task<IEnumerable<MonitorData>> Read()
         {
-            const string FAIL_VALUE = "-1";
+            const string FAIL_VALUE = "fail";
 
-            var sb = new StringBuilder();
+            List<MonitorData> list = [];
 
             await Task.Run(() =>
             {
@@ -58,13 +62,15 @@ namespace Function
 
                     foreach (var sensor in hard.Sensors)
                     {
-                        string value = sensor.Value.HasValue ? sensor.Value.Value.ToString() : FAIL_VALUE;
-                        string text = $"{sensor.Name} {sensor.SensorType} = {value}";
-                        sb.AppendLine(text);
+                        MonitorData item = new();
+                        item.Name = $"{sensor.Name} {sensor.SensorType}";
+                        item.Value = sensor.Value.HasValue ? sensor.Value.Value.ToString() : FAIL_VALUE;
+
+                        list.Add(item);
                     }
                 }
             });
-            return sb.ToString();
+            return list;
         }
     }
 }

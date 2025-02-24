@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Function;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sequence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace UI
             _servicesCollection = builder.Services;
 
             #region add
+            _servicesCollection.AddSingleton<Flow>();
             _servicesCollection.AddSingleton<MonitorHW>();
             _servicesCollection.AddSingleton<DataConfig>();
             AddViewAndViewModel<MainWindow, MainWindowViewModel>();
@@ -49,7 +51,7 @@ namespace UI
         private async void InitAsync()
         {
             await WaitShowWindow();
-            await _serviceProvider.GetService<MonitorHW>()!.Open();
+            _ = _serviceProvider.GetService<Flow>();
             WeakReferenceMessenger.Default.Send(new InitCompleteMessage());
         }
 

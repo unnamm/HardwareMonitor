@@ -20,6 +20,6 @@
     </Window.Resources>
 
     <Grid>
-        <DataGrid ItemsSource="{Binding Test}"/>
+        <DataGrid ItemsSource="{Binding Datas}"/>
     </Grid>
 </Window>

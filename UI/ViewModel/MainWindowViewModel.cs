@@ -26,9 +26,21 @@ namespace UI.ViewModel
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                foreach (var item in message.Data)
+                if (Datas.Count == 0)
                 {
-                    Datas.Add(item);
+                    foreach (var item in message.Data)
+                    {
+                        Datas.Add(item);
+                    }
+                }
+                else
+                {
+                    int i = 0;
+                    foreach (var item in message.Data)
+                    {
+                        Datas[i].Value = item.Value;
+                        i++;
+                    }
                 }
             });
         }

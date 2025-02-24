@@ -17,8 +17,12 @@ namespace Sequence
         public async void Receive(InitCompleteMessage message)
         {
             await _hw.Open();
-            var result = await _hw.Read();
-            WeakReferenceMessenger.Default.Send(new HardwareInfoMessage(result));
+            while (true)
+            {
+                var result = await _hw.Read();
+                WeakReferenceMessenger.Default.Send(new HardwareInfoMessage(result));
+                await Task.Delay(1000);
+            }
         }
     }
 }

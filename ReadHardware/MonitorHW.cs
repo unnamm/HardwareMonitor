@@ -44,11 +44,9 @@ namespace Function
             }
         }
 
-        public async Task<IEnumerable<MonitorData>> Read()
+        public async Task<IEnumerable<ISensor>> Read()
         {
-            const string FAIL_VALUE = "fail";
-
-            List<MonitorData> list = [];
+            List<ISensor> list = [];
 
             await Task.Run(() =>
             {
@@ -62,15 +60,12 @@ namespace Function
 
                     foreach (var sensor in hard.Sensors)
                     {
-                        MonitorData item = new();
-                        item.Name = $"{sensor.Name} {sensor.SensorType}";
-                        item.Value = sensor.Value.HasValue ? sensor.Value.Value.ToString() : FAIL_VALUE;
-
-                        list.Add(item);
+                        list.Add(sensor);
                     }
                 }
             });
             return list;
         }
+
     }
 }

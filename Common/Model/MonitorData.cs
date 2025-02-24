@@ -10,6 +10,9 @@ namespace Common.Model
     public partial class MonitorData : ObservableObject
     {
         [ObservableProperty] private string _name = string.Empty;
-        [ObservableProperty] private string _value;
+        [ObservableProperty] private string _sensorType = string.Empty;
+        [ObservableProperty] private string _hardwareType = string.Empty;
+        [ObservableProperty] private double _value;
+        [ObservableProperty] private string _amount = string.Empty;
     }
 }

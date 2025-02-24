@@ -20,6 +20,20 @@
     </Window.Resources>
 
     <Grid>
-        <DataGrid ItemsSource="{Binding Datas}"/>
+        <DataGrid ItemsSource="{Binding Datas}" IsReadOnly="True" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="SensorType" Binding="{Binding SensorType}"/>
+                <DataGridTextColumn Header="HardwareType" Binding="{Binding HardwareType}"/>
+                <DataGridTemplateColumn Header="Value">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Value, StringFormat={}{0:f1}}" HorizontalAlignment="Right"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding Amount}"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

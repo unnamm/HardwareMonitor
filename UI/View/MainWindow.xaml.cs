@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Common.Message;
+using CommunityToolkit.Mvvm.Messaging;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,10 +22,32 @@ namespace UI.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _isDispose;
+
         public MainWindow()
         {
             InitializeComponent();
             Style = (Style)FindResource("MaterialDesignWindow");
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (_isDispose == false)
+            {
+                e.Cancel = true;
+                EndProcess();
+            }
+            base.OnClosing(e);
+        }
+
+        private async void EndProcess()
+        {
+            await Task.Delay(1);
+            _isDispose = true;
+
+            WeakReferenceMessenger.Default.Send(new ExitMessage());
+
+            base.Close();
         }
     }
 }

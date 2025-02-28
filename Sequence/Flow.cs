@@ -7,7 +7,7 @@ using LibreHardwareMonitor.Hardware;
 
 namespace Sequence
 {
-    public class Flow : IRecipient<InitCompleteMessage>
+    public class Flow : IRecipient<InitCompleteMessage>, IRecipient<ExitMessage>
     {
         private readonly MonitorHW _hw;
         private readonly int _tick;
@@ -59,6 +59,11 @@ namespace Sequence
             };
 
             return item;
+        }
+
+        public void Receive(ExitMessage message)
+        {
+            _hw.Dispose();
         }
     }
 }

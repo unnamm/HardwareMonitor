@@ -67,5 +67,10 @@ namespace Function
             return list;
         }
 
+        public void Dispose()
+        {
+            _com.Close();
+        }
+
     }
 }

@@ -24,6 +24,9 @@ namespace UI.ViewModel
 
         public void Receive(HardwareInfoMessage message)
         {
+            if (Application.Current == null)
+                return;
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (Datas.Count == 0)
@@ -44,5 +47,6 @@ namespace UI.ViewModel
                 }
             });
         }
+
     }
 }

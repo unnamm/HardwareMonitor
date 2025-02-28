@@ -5,4 +5,4 @@
 /.vs
 */obj
 */bin
-/UI/Properties/PublishProfiles/FolderProfile.pubxml.user
+*/Properties/PublishProfiles/FolderProfile.pubxml.user
